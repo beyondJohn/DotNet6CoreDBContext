@@ -6,19 +6,8 @@ namespace NetCoreAPI.Data
 {
     public class NetCoreDBContext : DbContext
     {
-        private readonly IConfiguration _configuration;
-        private readonly string _connectionString;
-        public NetCoreDBContext(IConfiguration configuration)
-        {
-            _configuration = configuration;
-            _connectionString = _configuration.GetValue<string>("ConnectionStrings:NetCoreDBContextConnectionString");
-            
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_connectionString);
-        }
+        public NetCoreDBContext(DbContextOptions<NetCoreDBContext> options): base(options)
+        {}
 
         public DbSet<USERS> Users { get; set; }
 

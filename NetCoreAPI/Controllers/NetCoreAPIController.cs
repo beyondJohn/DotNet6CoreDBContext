@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NetCoreAPI.Data;
 
 namespace NetCoreAPI.Controllers
@@ -7,20 +8,20 @@ namespace NetCoreAPI.Controllers
     [Route("api/[controller]")]
     public class NetCoreAPIController : ControllerBase
     {
+        private readonly IDbContextFactory<NetCoreDBContext> _db;
         private readonly ILogger<NetCoreAPIController> _logger;
-        private readonly IConfiguration _configuration;
-
-        public NetCoreAPIController(ILogger<NetCoreAPIController> logger, IConfiguration configuration)
+        
+        public NetCoreAPIController(ILogger<NetCoreAPIController> logger, IDbContextFactory<NetCoreDBContext> contextFactory)
         {
             _logger = logger;
-            _configuration = configuration;
+            _db = contextFactory;
         }
 
         [HttpGet]
         public string Get()
         {
             var name = "";
-            using (var db = new NetCoreDBContext(_configuration))
+            using (var db = _db.CreateDbContext())
             {
                 var users = db.Users.Select(x => x.FirstName);
                 name = users.First();
